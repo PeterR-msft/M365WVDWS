@@ -85,6 +85,12 @@
         "description": "JSON object array of users that will be loaded into AD once the domain is established."
       }
     },
+    "customupnsuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "This needs to be specified in order to have a uniform logon experience within WVD"
+      }
+    },
     "defaultUserPassword": {
       "type": "securestring",
       "metadata": {
@@ -314,6 +320,11 @@
             {
               "Name": "adDomainName",
               "Value": "[parameters('adDomainName')]",
+              "TypeName": "System.Object"
+            },
+            {
+              "Name": "customupnsuffix",
+              "Value": "[parameters('customupnsuffix')]",
               "TypeName": "System.Object"
             },
             {
