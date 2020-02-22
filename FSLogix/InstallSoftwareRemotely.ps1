@@ -41,28 +41,28 @@
 #>
 
 Param(
-		[Parameter(Mandatory=$true,Position=0)] 
-		[ValidateNotNullOrEmpty()]
-		[string]$AppPath,
-		[Parameter(Mandatory=$false,Position=1)] 
-		[ValidateNotNullOrEmpty()]
-		[string]$AppArgs="None",
-		[Parameter(Mandatory=$false,Position=2)] 
-		[ValidateNotNullOrEmpty()]
-		[string]$LocalPath="C:\temp",
-        [Parameter(Mandatory=$false,Position=3)] 
-		[ValidateNotNullOrEmpty()]
-		[int]$Retries=5,
-        [Parameter(Mandatory=$false,Position=4)] 
-		[ValidateNotNullOrEmpty()]
-		[int]$TimeBetweenRetries=60,
-        [Parameter(Mandatory=$false,Position=5)] 
-		[ValidateNotNullOrEmpty()]
-		[string[]]$ComputerList,
-        [Parameter(Mandatory=$false,Position=6)] 
-		[ValidateNotNullOrEmpty()]
-		[string]$LogPath="C:\temp"
-	)
+    [Parameter(Mandatory = $true, Position = 0)] 
+    [ValidateNotNullOrEmpty()]
+    [string]$AppPath,
+    [Parameter(Mandatory = $false, Position = 1)] 
+    [ValidateNotNullOrEmpty()]
+    [string]$AppArgs = "None",
+    [Parameter(Mandatory = $false, Position = 2)] 
+    [ValidateNotNullOrEmpty()]
+    [string]$LocalPath = "C:\temp",
+    [Parameter(Mandatory = $false, Position = 3)] 
+    [ValidateNotNullOrEmpty()]
+    [int]$Retries = 5,
+    [Parameter(Mandatory = $false, Position = 4)] 
+    [ValidateNotNullOrEmpty()]
+    [int]$TimeBetweenRetries = 60,
+    [Parameter(Mandatory = $false, Position = 5)] 
+    [ValidateNotNullOrEmpty()]
+    [string[]]$ComputerList,
+    [Parameter(Mandatory = $false, Position = 6)] 
+    [ValidateNotNullOrEmpty()]
+    [string]$LogPath = "C:\temp"
+)
 
 #Requires -RunAsAdministrator
 
@@ -70,31 +70,31 @@ Param(
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-Function Copy-WithProgress
-{
-    Param([string]$Source,[string]$Destination)
+Function Copy-WithProgress {
+    Param([string]$Source, [string]$Destination)
 
-    $Source=$Source.tolower()
-    $Filelist=Get-Childitem $Source –Recurse
-    $Total=$Filelist.count
-    $Position=0
-    If(!(Test-Path $Destination)){
+    $Source = $Source.tolower()
+    $Filelist = Get-Childitem $Source –Recurse
+    $Total = $Filelist.count
+    $Position = 0
+    If (!(Test-Path $Destination)) {
         New-Item $Destination -Type Directory | Out-Null
     }
-    foreach ($File in $Filelist){
-        $Filename=$File.Fullname.tolower().replace($Source,'')
-        $DestinationFile=($Destination+$Filename)
-        try{
+    foreach ($File in $Filelist) {
+        $Filename = $File.Fullname.tolower().replace($Source, '')
+        $DestinationFile = ($Destination + $Filename)
+        try {
             Copy-Item $File.FullName -Destination $DestinationFile -Force
-        }catch{throw $_.Exception}
+        }
+        catch { throw $_.Exception }
         $Position++
-        Write-Progress -Activity "Copying data from $source to $Destination" -Status "Copying File $Filename" -PercentComplete (($Position/$Total)*100)
+        Write-Progress -Activity "Copying data from $source to $Destination" -Status "Copying File $Filename" -PercentComplete (($Position / $Total) * 100)
     }
 }
 
-Function Set-Message([string]$Text,[string]$ForegroundColor="White",[int]$Append=$True){
+Function Set-Message([string]$Text, [string]$ForegroundColor = "White", [int]$Append = $True) {
 
-    if ($Append){
+    if ($Append) {
         $Text | Out-File $LogPath -Append
     }
     else {
@@ -103,59 +103,57 @@ Function Set-Message([string]$Text,[string]$ForegroundColor="White",[int]$Append
     Write-Host $Text -ForegroundColor $ForegroundColor
 }
 
-Function InstallRemoteSoftware([string]$Computer){
-        try{
-            Return Invoke-Command -computername $Computer -ScriptBlock {
-                $Application = $args[0]
-                $AppArgs = $args[1]
-                $ApplicationName = $Application.Substring($Application.LastIndexOf('\')+1)
-                $ApplicationFolderPath = $Application.Substring(0,$Application.LastIndexOf('\'))
-                $ApplicationExt = $Application.Substring($Application.LastIndexOf('.')+1)
-                Write-Host "Installing $($ApplicationName) on $($env:COMPUTERNAME)"
-                If($ApplicationExt -eq "msi"){
-                    If ($AppArgs -ne "None"){
-                         Write-Host "Installing as MSI: msiexec /i $($Application) $($AppArgs)"
-                        $p = Start-Process "msiexec" -ArgumentList "/i $($Application) $($AppArgs)" -Wait -Passthru
-                    }
-                    else{
-                        Write-Host "Installing as MSI: msiexec /i $($Application)"
-                        $p = Start-Process "msiexec" -ArgumentList "/i $($Application) /quiet /norestart" -Wait -Passthru
-                    }
+Function InstallRemoteSoftware([string]$Computer) {
+    try {
+        Return Invoke-Command -computername $Computer -ScriptBlock {
+            $Application = $args[0]
+            $AppArgs = $args[1]
+            $ApplicationName = $Application.Substring($Application.LastIndexOf('\') + 1)
+            $ApplicationFolderPath = $Application.Substring(0, $Application.LastIndexOf('\'))
+            $ApplicationExt = $Application.Substring($Application.LastIndexOf('.') + 1)
+            Write-Host "Installing $($ApplicationName) on $($env:COMPUTERNAME)"
+            If ($ApplicationExt -eq "msi") {
+                If ($AppArgs -ne "None") {
+                    Write-Host "Installing as MSI: msiexec /i $($Application) $($AppArgs)"
+                    $p = Start-Process "msiexec" -ArgumentList "/i $($Application) $($AppArgs)" -Wait -Passthru
                 }
-                ElseIf ($AppArgs -ne "None"){
-                    Write-Host "Executing $Application $AppArgs"
-                    $p = Start-Process $Application -ArgumentList $AppArgs -Wait -Passthru
+                else {
+                    Write-Host "Installing as MSI: msiexec /i $($Application)"
+                    $p = Start-Process "msiexec" -ArgumentList "/i $($Application) /quiet /norestart" -Wait -Passthru
                 }
-                Else{
-                    Write-Host "Executing $Application"
-                    $p = Start-Process $Application -Wait -Passthru
-                }
-                $p.WaitForExit()
-                if ($p.ExitCode -ne 0) {
-                    Write-Host "Failed installing with error code $($p.ExitCode)" -ForegroundColor Red
-                    $Return = $($env:COMPUTERNAME)
-                }
-                else{
-                    $Return = 0
-                }
-                Write-Host "Deleting $($ApplicationFolderPath)"
-                Remove-Item $($ApplicationFolderPath) -Force -Recurse
-                Return $Return
-            } -ArgumentList "$($LocalPath)\$($ApplicationFolderName)\$($ApplicationName)", $AppArgs
-        }catch{throw $_.Exception}
+            }
+            ElseIf ($AppArgs -ne "None") {
+                Write-Host "Executing $Application $AppArgs"
+                $p = Start-Process $Application -ArgumentList $AppArgs -Wait -Passthru
+            }
+            Else {
+                Write-Host "Executing $Application"
+                $p = Start-Process $Application -Wait -Passthru
+            }
+            $p.WaitForExit()
+            if ($p.ExitCode -ne 0) {
+                Write-Host "Failed installing with error code $($p.ExitCode)" -ForegroundColor Red
+                $Return = $($env:COMPUTERNAME)
+            }
+            else {
+                $Return = 0
+            }
+            Write-Host "Deleting $($ApplicationFolderPath)"
+            Remove-Item $($ApplicationFolderPath) -Force -Recurse
+            Return $Return
+        } -ArgumentList "$($LocalPath)\$($ApplicationFolderName)\$($ApplicationName)", $AppArgs
     }
+    catch { throw $_.Exception }
 }
 
 $ErrorActionPreference = "Stop"
 
 #Initialice log
-if(!(test-path $LogPath))
-{
-    try
-    {
+if (!(test-path $LogPath)) {
+    try {
         mkdir -Path $LogPath
     }
-    catch{
+    catch {
         $($_.Exception.Message)
         Exit 1;
     }
@@ -166,100 +164,100 @@ Set-Message "Start remote installation on $(get-date -Format "yyyy-mm-dd hh:mm:s
 
 #Initial validations.
 
-If (!(Test-Path $AppPath)){
+If (!(Test-Path $AppPath)) {
     Set-Message "Error accessing $($AppPath). The script can not continue"
     Exit 1
 }
-If(!$ComputerList){
+If (!$ComputerList) {
     Set-Message "You have to set a list of computers, OU or CSV." -ForegroundColor Red
     Exit 1
 }
 
-$ApplicationName = $AppPath.Substring($AppPath.LastIndexOf('\')+1)
-$ApplicationFolderPath = $AppPath.Substring(0,$AppPath.LastIndexOf('\'))
-$ApplicationFolderName = $ApplicationFolderPath.Substring($ApplicationFolderPath.LastIndexOf('\')+1)
+$ApplicationName = $AppPath.Substring($AppPath.LastIndexOf('\') + 1)
+$ApplicationFolderPath = $AppPath.Substring(0, $AppPath.LastIndexOf('\'))
+$ApplicationFolderName = $ApplicationFolderPath.Substring($ApplicationFolderPath.LastIndexOf('\') + 1)
 $ComputerWithError = [System.Collections.ArrayList]@()
 $ComputerWithSuccess = [System.Collections.ArrayList]@()
 $ComputerSkipped = [System.Collections.ArrayList]@()
 $TotalRetries = $Retries
 $TotalComputers = $ComputerList.Count
 
-Do{
+Do {
     Set-Message "-----------------------------------------------------------------"
     Set-Message "Attempt $(($TotalRetries - $Retries) +1) of $($TotalRetries)" -ForegroundColor Cyan
     Set-Message "-----------------------------------------------------------------"
     $Count = 1
-    ForEach ($Computer in $ComputerList){
+    ForEach ($Computer in $ComputerList) {
         Set-Message "COMPUTER $($Computer.ToUpper()) ($($Count) of $($ComputerList.Count))" -ForegroundColor Yellow
         $Count++
         Set-Message "Coping $($ApplicationFolderPath) to \\$($Computer)\$($LocalPath -replace ':','$')"
-        try{
+        try {
             Copy-WithProgress "$ApplicationFolderPath" "\\$($Computer)\$("$($LocalPath)\$($ApplicationFolderName)" -replace ':','$')"
-        }catch{
-                Set-Message "Error copying folder: $($_.Exception.Message)" -ForegroundColor Red
-                $ComputerWithError.Add($Computer) | Out-Null
-                Continue;
-            }
-        try{
+        }catch {
+            Set-Message "Error copying folder: $($_.Exception.Message)" -ForegroundColor Red
+            $ComputerWithError.Add($Computer) | Out-Null
+            Continue;
+        }
+        try {
             $ExitCode = InstallRemoteSoftware $Computer
-            If ($ExitCode){
+            If ($ExitCode) {
                 $ComputerWithError.Add($Computer) | Out-Null
                 Set-Message "Error installing $($ApplicationName)." -ForegroundColor Red
             }
-            else{
+            else {
                 Set-Message "$($ApplicationName) installed successfully." -ForegroundColor Green
                 $ComputerWithSuccess.Add($Computer) | Out-Null
             }
-            }catch{
-                Set-Message "Error on remote execution: $($_.Exception.Message)" -ForegroundColor Red
-                $ComputerWithError.Add($Computer) | Out-Null
-                try{
-                    Set-Message "Deleting \\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)"
-                }catch{
-                    Set-Message "Error on remote deletion: $($_.Exception.Message)" -ForegroundColor Red
-                }
-                Remove-Item "\\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)" -Force -Recurse
+        }catch {
+            Set-Message "Error on remote execution: $($_.Exception.Message)" -ForegroundColor Red
+            $ComputerWithError.Add($Computer) | Out-Null
+            try {
+                Set-Message "Deleting \\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)"
+            }catch {
+                Set-Message "Error on remote deletion: $($_.Exception.Message)" -ForegroundColor Red
             }
+            Remove-Item "\\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)" -Force -Recurse
+        }
     }
-    If ($ComputerWithError.Count -eq 0){
+    If ($ComputerWithError.Count -eq 0) {
         break
     }
     $Retries--
-    If ($Retries -gt 0){
-        $ComputerList=$ComputerWithError
+    If ($Retries -gt 0) {
+        $ComputerList = $ComputerWithError
         $ComputerWithError = [System.Collections.ArrayList]@()
-        If ($TimeBetweenRetries -gt 0){
+        If ($TimeBetweenRetries -gt 0) {
             Set-Message "Waiting $($TimeBetweenRetries) seconds before next retry..."
             Sleep $TimeBetweenRetries
         }
     }
 }While ($Retries -gt 0)
 
-If($ComputerWithError.Count -gt 0){
+If ($ComputerWithError.Count -gt 0) {
     Set-Message "-----------------------------------------------------------------"
     Set-Message "Error installing $($ApplicationName) on $($ComputerWithError.Count) of $($TotalComputers) computers:"
     Set-Message $ComputerWithError
     $csvContents = @()
-    ForEach($Computer in $ComputerWithError){
+    ForEach ($Computer in $ComputerWithError) {
         $row = New-Object System.Object
         $row | Add-Member -MemberType NoteProperty -Name "Name" -Value $Computer
         $csvContents += $row
     }
-    $CSV=(get-date).ToString('yyyyMMdd-HH_mm_ss') + "ComputerWithError.csv"
+    $CSV = (get-date).ToString('yyyyMMdd-HH_mm_ss') + "ComputerWithError.csv"
     $csvContents | Export-CSV -notype -Path "$([Environment]::GetFolderPath("MyDocuments"))\$($CSV)" -Encoding UTF8
     Set-Message "Computers with error exported to CSV file: $([Environment]::GetFolderPath("MyDocuments"))\$($CSV)" -ForegroundColor DarkYellow
     Set-Message "You can retry failed installation on this computers using parameter -CSV $([Environment]::GetFolderPath("MyDocuments"))\$($CSV)" -ForegroundColor DarkYellow
 }
-If ($ComputerWithSuccess.Count -gt 0){
+If ($ComputerWithSuccess.Count -gt 0) {
     Set-Message "-----------------------------------------------------------------"
     Set-Message "$([math]::Round((($ComputerWithSuccess.Count * 100) / $TotalComputers), [System.MidpointRounding]::AwayFromZero) )% Success installing $($ApplicationName) on $($ComputerWithSuccess.Count) of $($TotalComputers) computers:"
     Set-Message $ComputerWithSuccess
 }
-Else{
+Else {
     Set-Message "-----------------------------------------------------------------"
     Set-Message "Installation of $($ApplicationName) failed on all computers" -ForegroundColor Red
 }
-If ($ComputerSkipped.Count -gt 0){
+If ($ComputerSkipped.Count -gt 0) {
     Set-Message "-----------------------------------------------------------------"
     Set-Message "$($ComputerSkipped.Count) skipped of $($TotalComputers) computers:"
     Set-Message $ComputerSkipped
