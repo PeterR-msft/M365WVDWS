@@ -193,7 +193,8 @@ Do {
         Set-Message "Coping $($ApplicationFolderPath) to \\$($Computer)\$($LocalPath -replace ':','$')"
         try {
             Copy-WithProgress "$ApplicationFolderPath" "\\$($Computer)\$("$($LocalPath)\$($ApplicationFolderName)" -replace ':','$')"
-        }catch {
+        }
+        catch {
             Set-Message "Error copying folder: $($_.Exception.Message)" -ForegroundColor Red
             $ComputerWithError.Add($Computer) | Out-Null
             Continue;
@@ -208,12 +209,14 @@ Do {
                 Set-Message "$($ApplicationName) installed successfully." -ForegroundColor Green
                 $ComputerWithSuccess.Add($Computer) | Out-Null
             }
-        }catch {
+        }
+        catch {
             Set-Message "Error on remote execution: $($_.Exception.Message)" -ForegroundColor Red
             $ComputerWithError.Add($Computer) | Out-Null
             try {
                 Set-Message "Deleting \\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)"
-            }catch {
+            }
+            catch {
                 Set-Message "Error on remote deletion: $($_.Exception.Message)" -ForegroundColor Red
             }
             Remove-Item "\\$($Computer)\$($LocalPath -replace ':','$')\$($ApplicationFolderName)" -Force -Recurse
@@ -228,7 +231,7 @@ Do {
         $ComputerWithError = [System.Collections.ArrayList]@()
         If ($TimeBetweenRetries -gt 0) {
             Set-Message "Waiting $($TimeBetweenRetries) seconds before next retry..."
-            Sleep $TimeBetweenRetries
+            Start-Sleep $TimeBetweenRetries
         }
     }
 }While ($Retries -gt 0)
