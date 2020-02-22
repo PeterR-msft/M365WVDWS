@@ -56,7 +56,7 @@ param(
 )
 
 #Initializing variables
-$ScriptRepoLocation = "https://raw.githubusercontent.com/Azure/RDS-Templates/master/wvd-templates/wvd-scaling-script/"
+$ScriptRepoLocation = "https://raw.githubusercontent.com/PeterR-msft/M365WVDWS/master/WVD%20Scaling%20Automation/"
 $RunbookName = "WVDAutoScaleRunbook"
 $WebhookName = "WVDAutoScaleWebhook"
 
