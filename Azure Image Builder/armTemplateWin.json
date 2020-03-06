@@ -35,35 +35,6 @@
                     "version": "latest"
                 
             },
-            "customize": [
-
-                    {
-                        "type": "PowerShell",
-                        "name": "CreateBuildPath",
-                        "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/testPsScript.ps1"
-                    },
-                    {
-                        "type": "WindowsRestart",
-                        "restartCheckCommand": "echo Azure-Image-Builder-Restarted-the-VM  > c:\\buildArtifacts\\azureImageBuilderRestart.txt",
-                        "restartTimeout": "5m"
-                    },
-                    {
-                        "type": "File",
-                        "name": "downloadBuildArtifacts",
-                        "sourceUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/exampleArtifacts/buildArtifacts/index.html",
-                        "destination":"c:\\buildArtifacts\\index.html"
-                    },
-        
-                    {
-                        "type": "PowerShell",
-                        "name": "settingUpMgmtAgtPath",
-                        "inline": [
-                            "mkdir c:\\buildActions",
-                            "echo Azure-Image-Builder-Was-Here  > c:\\buildActions\\buildActionsOutput.txt"
-                        ]
-                        }
-
-            ],
             "distribute": 
             [
                 {   "type":"ManagedImage",
