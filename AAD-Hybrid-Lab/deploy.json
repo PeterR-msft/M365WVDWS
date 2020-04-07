@@ -101,7 +101,6 @@
       "type": "string",
       "defaultValue": "Standard_A2_v2",
       "allowedValues": [
-        "Standard_A1_v2",
         "Standard_A2_v2",
         "Standard_A4_v2",
         "Standard_A2M_v2",
@@ -113,7 +112,9 @@
         "Standard_D12_v2",
         "Standard_B2ms",
         "Standard_B2s",
-        "Standard_B4ms"
+        "Standard_B4ms",
+        "Standard_F2",
+        "Standard_F2s_v2"
       ],
       "metadata": {
         "description": "Select a VM SKU (please ensure the SKU is available in your selected region)."
@@ -269,40 +270,12 @@
       }
     },
     {
-      "name": "virtualNetworkDNSUpdate",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "Microsoft.Resources/Deployments/adVMs"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetDNSTemplateURI')]"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[variables('virtualNetworkName')]"
-          },
-          "subnets": {
-            "value": "[ variables('subnets') ]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
-          "dnsIP": {
-            "value": "[parameters('adIP')]"
-          }
-        }
-      }
-    },
-    {
       "name": "[concat(variables('adVMName'),'/Microsoft.Powershell.DSC')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[variables('location')]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
-        "virtualNetworkDNSUpdate"
+        "Microsoft.Resources/deployments/adVMs"
       ],
       "tags": {
         "displayName": "adDSC"
@@ -354,6 +327,34 @@
           "Items": {
             "AdminPassword": "[parameters('adminPassword')]",
             "UserPassword": "[parameters('defaultUserPassword')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "virtualNetworkDNSUpdate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetDNSTemplateURI')]"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[variables('virtualNetworkName')]"
+          },
+          "subnets": {
+            "value": "[ variables('subnets') ]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "dnsIP": {
+            "value": "[parameters('adIP')]"
           }
         }
       }
