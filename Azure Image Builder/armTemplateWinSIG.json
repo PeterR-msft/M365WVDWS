@@ -28,7 +28,7 @@
             "buildTimeoutInMinutes" : 100,
     
             {
-              "vmSize": "<maschinesku>"
+              "vmSize": "<machinesku>"
             },
 
             "source": {
