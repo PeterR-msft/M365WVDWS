@@ -26,14 +26,17 @@
         "dependsOn": [],
         "properties": {
             "buildTimeoutInMinutes" : 100,
-        
+    
+            {
+              "vmSize": "<Standard_A4>"
+            },
+
             "source": {
                 "type": "PlatformImage",
-				"publisher": "MicrosoftWindowsDesktop",
+				            "publisher": "MicrosoftWindowsDesktop",
                     "offer": "Windows-10",
                     "sku": "<skuName>",
                     "version": "latest"
-                
             },        
             "distribute": 
             [
