@@ -28,7 +28,7 @@
             "buildTimeoutInMinutes" : 100,
     
             {
-              "vmSize": "<Standard_A4>"
+              "vmSize": "<maschinesku>"
             },
 
             "source": {
