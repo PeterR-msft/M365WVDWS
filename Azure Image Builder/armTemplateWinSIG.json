@@ -26,11 +26,10 @@
         "dependsOn": [],
         "properties": {
             "buildTimeoutInMinutes" : 100,
-    
+	    "vmProfile":    
             {
               "vmSize": "<machinesku>"
             },
-
             "source": {
                 "type": "PlatformImage",
 				            "publisher": "MicrosoftWindowsDesktop",
