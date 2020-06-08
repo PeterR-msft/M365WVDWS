@@ -9,21 +9,11 @@
         "description": "When deploying the stack N times, define the instance - this will be appended to some resource names to avoid collisions."
       }
     },
-    "virtualNetworkName": {
-      "type": "string",
-      "defaultValue": "vnet",
-      "metadata": {
-        "description": "Name of the virtual network for this deployment"
-      }
-    },
     "subnets": { "type": "array" }
   },
   "variables": {
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
     "adNSGName": "[concat('INT-AD', parameters('deploymentNumber'))]",
-    "adSubnetName": "[concat('adSubnet', parameters('deploymentNumber'))]",
     "adsubnetrange": "[parameters('subnets')[0].properties.addressPrefix]",
-    "adSubnetId": "[concat(variables('vnetID'),'/subnets/',variables ('adSubnetName'))]",
     "location": "[resourceGroup().location]"
   },
   "resources": [
