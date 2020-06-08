@@ -236,17 +236,11 @@
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
-          "adDomainName": {
-            "value": "[parameters('adDomainName')]"
-          },
           "adSubnetName": {
             "value": "[variables('adSubnetName')]"
           },
           "adVMName": {
             "value": "[variables('adVMName')]"
-          },
-          "assetlocation": {
-            "value": "[parameters('assetLocation')]"
           },
           "location": {
             "value": "[variables('location')]"
