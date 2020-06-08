@@ -32,17 +32,11 @@
       },
       "apiVersion": "2019-12-01",
       "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('virtualNetworkAddressRange')]"
-          ]
-        },
         "dhcpOptions": {
           "dnsServers": [
             "[parameters('dnsIP')]"
           ]
-        },
-        "subnets": "[parameters('subnets')]"
+        }
       }
     }
   ]
