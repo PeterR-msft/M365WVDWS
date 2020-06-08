@@ -8,8 +8,7 @@
       "metadata": { "description": "The address range of the new VNET in CIDR format" },
       "defaultValue": "10.0.0.0/16"
     },
-    "subnets": { "type": "array" },
-    "dnsIP": { "type": "string" }
+    "subnets": { "type": "array" }
   },
   "variables": {
     "location": "[resourceGroup().location]"
@@ -22,9 +21,6 @@
       "tags": { "displayName": "virtualNetwork" },
       "apiVersion": "2015-06-15",
       "properties": {
-        "dhcpOptions": {
-          "dnsServers": [ "[parameters('dnsIP')]" ]
-        },
         "addressSpace": {
           "addressPrefixes": [
             "[parameters('virtualNetworkAddressRange')]"
