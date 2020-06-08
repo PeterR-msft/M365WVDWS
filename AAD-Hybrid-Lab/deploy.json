@@ -180,9 +180,6 @@
           "uri": "[variables('nsgTemplateURI')]"
         },
         "parameters": {
-          "virtualNetworkName": {
-            "value": "[variables('virtualNetworkName')]"
-          },
           "subnets": {
             "value": "[ variables('subnets') ]"
           },
