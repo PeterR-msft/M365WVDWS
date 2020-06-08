@@ -16,7 +16,7 @@
   },
   "resources": [
     {
-      "name": "[concat(parameters('virtualNetworkName'),'DNSUpdate')]",
+      "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[variables('location')]",
       "tags": { "displayName": "virtualNetwork" },
