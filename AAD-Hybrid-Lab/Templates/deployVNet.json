@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "virtualNetworkName": { "type": "string" },
@@ -8,7 +8,8 @@
       "metadata": { "description": "The address range of the new VNET in CIDR format" },
       "defaultValue": "10.0.0.0/16"
     },
-    "subnets": { "type": "array" }
+    "subnets": { "type": "array" },
+    "dnsIP": { "type": "string" }
   },
   "variables": {
     "location": "[resourceGroup().location]"
@@ -21,6 +22,9 @@
       "tags": { "displayName": "virtualNetwork" },
       "apiVersion": "2015-06-15",
       "properties": {
+        "dhcpOptions": {
+          "dnsServers": [ "[parameters('dnsIP')]" ]
+        },
         "addressSpace": {
           "addressPrefixes": [
             "[parameters('virtualNetworkAddressRange')]"

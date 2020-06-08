@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "assetLocation": {
@@ -154,7 +154,6 @@
     "adTemplateURI": "[concat(parameters('assetLocation'),'Templates/adDeploy.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
-    "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
     "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip')]",
     "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainController",
     "subnets": [
@@ -213,6 +212,9 @@
           },
           "virtualNetworkAddressRange": {
             "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "dnsIP": {
+            "value": "[parameters('adIP')]"
           }
         }
       }
@@ -327,34 +329,6 @@
           "Items": {
             "AdminPassword": "[parameters('adminPassword')]",
             "UserPassword": "[parameters('defaultUserPassword')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "virtualNetworkDNSUpdate",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetDNSTemplateURI')]"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[variables('virtualNetworkName')]"
-          },
-          "subnets": {
-            "value": "[ variables('subnets') ]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
-          "dnsIP": {
-            "value": "[parameters('adIP')]"
           }
         }
       }
