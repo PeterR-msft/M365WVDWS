@@ -21,7 +21,7 @@
   },
   "resources": [
     {
-      "name": "contoso1-vnet",
+      "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[variables('location')]",
       "tags": {
