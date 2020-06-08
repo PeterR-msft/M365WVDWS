@@ -345,7 +345,7 @@
             "value": "[variables('virtualNetworkName')]"
           },
           "subnets": {
-            "value": "[ variables('subnets') ]"
+            "value": "[variables('subnets')]"
           },
           "virtualNetworkAddressRange": {
             "value": "[parameters('virtualNetworkAddressRange')]"

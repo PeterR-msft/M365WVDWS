@@ -30,7 +30,7 @@
       "tags": {
         "displayName": "virtualNetwork"
       },
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2019-12-01",
       "properties": {
         "dhcpOptions": {
           "dnsServers": [

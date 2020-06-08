@@ -2,13 +2,19 @@
   "$schema": "http://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualNetworkName": { "type": "string" },
+    "virtualNetworkName": {
+      "type": "string"
+    },
     "virtualNetworkAddressRange": {
       "type": "string",
-      "metadata": { "description": "The address range of the new VNET in CIDR format" },
+      "metadata": {
+        "description": "The address range of the new VNET in CIDR format"
+      },
       "defaultValue": "10.0.0.0/16"
     },
-    "subnets": { "type": "array" }
+    "subnets": {
+      "type": "array"
+    }
   },
   "variables": {
     "location": "[resourceGroup().location]"
@@ -18,8 +24,10 @@
       "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[variables('location')]",
-      "tags": { "displayName": "virtualNetwork" },
-      "apiVersion": "2015-06-15",
+      "tags": {
+        "displayName": "virtualNetwork"
+      },
+      "apiVersion": "2019-12-01",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -32,8 +40,8 @@
   ],
   "outputs": {
     "VNet": {
-        "type": "object",
-        "value": "[reference(parameters('virtualNetworkName'))]"
+      "type": "object",
+      "value": "[reference(parameters('virtualNetworkName'))]"
     }
   }
 }
