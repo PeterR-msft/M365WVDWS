@@ -5,16 +5,6 @@
     "virtualNetworkName": {
       "type": "string"
     },
-    "virtualNetworkAddressRange": {
-      "type": "string",
-      "metadata": {
-        "description": "The address range of the new VNET in CIDR format"
-      },
-      "defaultValue": "10.0.0.0/16"
-    },
-    "subnets": {
-      "type": "array"
-    },
     "dnsIP": {
       "type": "string"
     }
@@ -24,7 +14,7 @@
   },
   "resources": [
     {
-      "name": "[parameters('virtualNetworkName')]",
+      "name": "contoso1-vnet",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[variables('location')]",
       "tags": {

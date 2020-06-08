@@ -338,12 +338,6 @@
           "virtualNetworkName": {
             "value": "[variables('virtualNetworkName')]"
           },
-          "subnets": {
-            "value": "[variables('subnets')]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
           "dnsIP": {
             "value": "[parameters('adIP')]"
           }
