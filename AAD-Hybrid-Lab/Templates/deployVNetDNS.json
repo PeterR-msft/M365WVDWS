@@ -12,6 +12,9 @@
       },
       "defaultValue": "10.0.0.0/16"
     },
+    "subnets": {
+      "type": "array"
+    },
     "dnsIP": {
       "type": "string"
     }
@@ -38,7 +41,8 @@
           "dnsServers": [
             "[parameters('dnsIP')]"
           ]
-        }
+        },
+        "subnets": "[parameters('subnets')]"
       }
     }
   ]
