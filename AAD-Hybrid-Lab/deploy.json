@@ -323,32 +323,29 @@
       }
     },
     {
-      "name": "virtualNetworkDNSUpdate",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2019-10-01",
+      "name": "contoso1-vnet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "virtualNetwork"
+      },
+      "apiVersion": "2019-12-01",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
       ],
       "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetDNSTemplateURI')]"
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('virtualNetworkAddressRange')]"
+          ]
         },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[variables('virtualNetworkName')]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
-          "dnsIP": {
-            "value": "[parameters('adIP')]"
-          }
+        "dhcpOptions": {
+          "dnsServers": [
+            "[parameters('adIP')]"
+          ]
         }
       }
     }
-  ],
-  "outputs": {
+], "outputs": {
 
-  }
-}
+} }
