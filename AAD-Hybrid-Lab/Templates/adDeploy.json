@@ -137,9 +137,6 @@
     }
   ],
   "outputs": {
-    "ADVMFQDN": {
-        "type": "string",
-        "value": "[reference(parameters('adVMName')).DnsSettings.Fqdn]"
-    }
+    
   }
 }
