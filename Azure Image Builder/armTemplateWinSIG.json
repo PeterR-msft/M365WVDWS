@@ -48,8 +48,7 @@
                         "baseosimg": "Windows-10"
                     },
                     "replicationRegions": [
-                      "<region1>",
-                      "<region2>"
+                      "<region>"
                     ]
                 }
             ]
