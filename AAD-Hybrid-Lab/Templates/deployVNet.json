@@ -39,9 +39,6 @@
     }
   ],
   "outputs": {
-    "VNet": {
-      "type": "object",
-      "value": "[reference(parameters('virtualNetworkName'))]"
-    }
+
   }
 }
